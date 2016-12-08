@@ -4,9 +4,8 @@
 
 
 ##期刊杂志
-
-
-
+-Journal of Urban Economics
+-Regional Science and Urban Economic
 
 ##优秀学者
 
