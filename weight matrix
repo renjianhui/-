@@ -1,0 +1,8 @@
+genW<- function (coords, labels) 
+{
+    W <- 1/as.matrix(dist(coords))
+    colnames(W) <- labels
+    rownames(W) <- labels
+    W[which(W == Inf)] <- 0
+    return(W)
+}
