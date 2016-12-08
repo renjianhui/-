@@ -3,7 +3,7 @@
 
 
 
-##期刊杂志
+## 期刊杂志
 - Journal of Economic Geography
 - Journal of Urban Economics
 - Regional Science and Urban Economic
@@ -14,8 +14,8 @@
 - The Reviews of Regional Studies
 - International Regional Science Review
 - Growth and Change
-##优秀学者
+## 优秀学者
 
 
 
-##软件包
+## 软件包
