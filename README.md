@@ -4,9 +4,25 @@
 
 
 ##期刊杂志
--Journal of Urban Economics
--Regional Science and Urban Economic
+ -Journal of Economic Geography
 
+ -Journal of Urban Economics
+
+ -Regional Science and Urban Economic
+
+ -Journal of Regional Science
+
+ -Annals of Regional Science
+
+ -Papers in Regional Science
+
+ -Regional Studies
+
+ -The Reviews of Regional Studies
+
+ -International Regional Science Review
+ 
+ -Growth and Change
 ##优秀学者
 
 
