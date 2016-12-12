@@ -1,0 +1,29 @@
+library(spdep)
+library(maptools)
+
+poly <- readShapePoly("logo31")
+data <- slot(poly,"data")
+
+head(data)
+
+##spatial weight
+
+nb_rook <- read.gal("logo31.gal")
+
+summary(nb_rook)
+
+#Set spatial coordinates to create a Spatial object
+
+coords <- coordinates(poly)
+
+par(mar = c(0, 0, 0, 0),bg = "wheat")
+
+plot(poly,col = "brown1",border = "gold")
+
+plot(nb_rook,coords,add = T)
+
+text(coords,labels=data$NAME2004,pos=4,col="black",cex=0.75,offset=0.05)
+
+text(105,55,"Regional Study",col = "tomato3",cex = 2)
+
+text(105,15,"Take little but Give much!!",col = "skyblue4",cex = 1.5)
