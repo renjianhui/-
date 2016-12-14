@@ -73,6 +73,7 @@
 - **splm**  The splm package provides methods for fitting spatial panel data by maximum likelihood and GM. 
 - **S2sls**和 **spanel**   The two small packages **S2sls** and **spanel** provide alternative implementations without most of the facilities of **splm**.
 
+#### 其他
 > The **HSAR** package provides Hierarchical Spatial Autoregressive Models (HSAR), based on a Bayesian Markov Chain Monte Carlo (MCMC) algorithm. **spatialprobit** make possible Bayesian estimation of the spatial autoregressive probit model (SAR probit model). The **ProbitSpatial** package provides methods for fitting Binomial spatial probit models to larger data sets; spatial autoregressive (SAR) and spatial error (SEM) probit models are included.
 
 
