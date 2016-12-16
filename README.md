@@ -20,6 +20,7 @@
 
 ### 国内著名学者
    方创琳、梁琦、郑思齐、覃成林、张可云、安虎森、陈安平、陆铭等
+
 ### 国外著名学者
     
    
@@ -50,6 +51,7 @@
  - 区域研究协会 <http://www.regionalstudies.org>
  - 区域科学协会中国分会 <http://www.rsachina.org/zzjg/ry/130.html>
  - 中国区域科学协会 <http://www.rsac.org.cn>
+
 ## 软件包
 ### 测度效率
 ####数据包络分析
