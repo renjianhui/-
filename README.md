@@ -45,8 +45,11 @@
     |Elhorst J.P          |University of Groningen  |  18    |
     |Murray A.T           |Arizona State University |  19    |
     |Faggian A            |Ohio State University    |  20    |
-  
-  
+
+## 知名组织机构
+ - 区域研究协会 <http://www.regionalstudies.org>
+ - 区域科学协会中国分会 <http://www.rsachina.org/zzjg/ry/130.html>
+ - 中国区域科学协会 <http://www.rsac.org.cn>
 ## 软件包
 ### 测度效率
 ####数据包络分析
