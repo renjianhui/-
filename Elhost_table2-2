@@ -1,0 +1,83 @@
+library(spdep)
+library(stargazer)
+
+data(oldcol)
+lw <- nb2listw(COL.nb, style = "W")
+
+OLS <- lm(CRIME ~ INC + HOVAL , data = COL.OLD)
+
+SAR <-
+  lagsarlm(
+    CRIME ~ INC + HOVAL,
+    data = COL.OLD,
+    nb2listw(COL.nb, style = "W"),
+    method = "eigen",
+    quiet = FALSE
+  )
+
+SEM <-
+  errorsarlm(
+    CRIME ~ INC + HOVAL,
+    data = COL.OLD,
+    lw,
+    method = "eigen",
+    quiet = FALSE
+  )
+
+SLX <-
+  lmSLX(CRIME ~ INC + HOVAL, data = COL.OLD, listw = lw)
+
+SAC <-
+  sacsarlm(CRIME ~ INC + HOVAL, data = COL.OLD, nb2listw(COL.nb, style =
+                                                           "W"))
+
+SDM <-
+  lagsarlm(
+    CRIME ~ INC + HOVAL,
+    data = COL.OLD,
+    nb2listw(COL.nb, style = "W"),
+    method = "eigen",
+    quiet = FALSE,
+    type = "mixed"
+  )
+
+SDEM <-
+  errorsarlm(
+    CRIME ~ INC + HOVAL,
+    data = COL.OLD,
+    lw,
+    method = "eigen",
+    quiet = FALSE,
+    etype = "emixed"
+  )
+
+GNS <-
+  sacsarlm(CRIME ~ INC + HOVAL,
+           data = COL.OLD,
+           nb2listw(COL.nb, style = "W"),
+           type = "sacmixed")
+
+
+stargazer(OLS,
+          SAR,
+          SEM,
+          SLX,
+          SAC,
+          SDM,
+          SDEM,
+          GNS,
+          type = "text",
+          title = " comparison of the estimation results explaining the crime rate")
+
+
+stargazer(
+  OLS,
+  SAR,
+  SEM,
+  SDM,
+  SDEM,
+  type = "text",
+  model.names = F,
+  column.labels = c("OLS", "SAR", "SEM", "SDM", "SDEM"),
+  title = " comparison of the estimation results explaining the crime rate"
+)
