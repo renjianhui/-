@@ -5,21 +5,29 @@
 
 ## 期刊杂志
 
-- Journal of Economic Geography
-- Journal of Urban Economics
-- Regional Science and Urban Economic
-- Journal of Regional Science
-- Annals of Regional Science
-- Papers in Regional Science
-- Regional Studies
-- The Reviews of Regional Studies
-- International Regional Science Review
-- Growth and Change
-
+   - Journal of Economic Geography
+   - Journal of Urban Economics
+   - Regional Science and Urban Economic
+   - Journal of Regional Science
+   - Annals of Regional Science
+   - Papers in Regional Science
+   - Regional Studies
+   - Reviews of Regional Studies
+   - Review of Urban & Regional Development Studies
+   - International Regional Science Review
+   - Growth and Change
+   - Spatial Economic Analysis
+   - Canadian Journal of Regional Science
+   - Industrial Geographer
+   - Investigaciones Regionales (en español)
+   - Journal of Regional Analysis and Policy
+   - Regional Science Policy & Practice
+   
 ## 优秀学者
 
 ### 国内著名学者
-   方创琳、梁琦、郑思齐、覃成林、张可云、安虎森、陈安平、陆铭等
+    
+    方创琳、梁琦、郑思齐、覃成林、张可云、安虎森、陈安平、陆铭等
 
 ### 国外著名学者
     
@@ -64,20 +72,20 @@
 ####横截面估计
 > The choice of function for spatial regression will depend on the support available.
 
--  **nlme**  If the data are characterised by point support and the spatial process is continuous, geostatistical methods may be used, or functions in the nlme package. 
+  -  **nlme**  If the data are characterised by point support and the spatial process is continuous, geostatistical methods may be used, or functions in the nlme package. 
 
-- **spdep**  If the support is areal, and the spatial process is not being treated as continuous, functions provided in the spdep package may be used. This package can also be seen as providing spatial econometrics functions, and, as noted above, provides basic functions for building neighbour lists and spatial weights, tests for spatial autocorrelation for areal data like Moran's I, and functions for fitting spatial regression models. It provides the full range of local indicators of spatial association, such as local Moran's I and diagnostic tools for fitted linear models, including Lagrange Multiplier tests. Spatial regression models that can be fitted using maximum likelihood include spatial lag models, spatial error models, and spatial Durbin models. For larger data sets, sparse matrix techniques can be used for maximum likelihood fits, while spatial two stage least squares and generalised method of moments estimators are an alternative.
+  - **spdep**  If the support is areal, and the spatial process is not being treated as continuous, functions provided in the spdep package may be used. This package can also be seen as providing spatial econometrics functions, and, as noted above, provides basic functions for building neighbour lists and spatial weights, tests for spatial autocorrelation for areal data like Moran's I, and functions for fitting spatial regression models. It provides the full range of local indicators of spatial association, such as local Moran's I and diagnostic tools for fitted linear models, including Lagrange Multiplier tests. Spatial regression models that can be fitted using maximum likelihood include spatial lag models, spatial error models, and spatial Durbin models. For larger data sets, sparse matrix techniques can be used for maximum likelihood fits, while spatial two stage least squares and generalised method of moments estimators are an alternative.
 
-- **sphet**  When using GMM, sphet can be used to accommodate both autocorrelation and heteroskedasticity.
+  - **sphet**  When using GMM, sphet can be used to accommodate both autocorrelation and heteroskedasticity.
 
-- **spatcounts**  Spatial count regression is provided using custom MCMC by spatcounts.
+  - **spatcounts**  Spatial count regression is provided using custom MCMC by spatcounts.
 
-- **McSpatial**  The McSpatialprovides functions for locally weighted regression, semiparametric and conditionally parametric regression, fourier and cubic spline functions, GMM and linearized spatial logit and probit, k-density functions and counterfactuals, nonparametric quantile regression and conditional density functions, Machado-Mata decomposition for quantile regressions, spatial AR model, repeat sales models, and conditionally parametric logit and probit. 
+  - **McSpatial**  The McSpatialprovides functions for locally weighted regression, semiparametric and conditionally parametric regression, fourier and cubic spline functions, GMM and linearized spatial logit and probit, k-density functions and counterfactuals, nonparametric quantile regression and conditional density functions, Machado-Mata decomposition for quantile regressions, spatial AR model, repeat sales models, and conditionally parametric logit and probit. 
 
 #### 面板数据估计
 
-- **splm**  The splm package provides methods for fitting spatial panel data by maximum likelihood and GM. 
-- **S2sls**和 **spanel**   The two small packages S2sls and spanel provide alternative implementations without most of the facilities of splm.
+  - **splm**  The splm package provides methods for fitting spatial panel data by maximum likelihood and GM. 
+  - **S2sls**和 **spanel**   The two small packages S2sls and spanel provide alternative implementations without most of the facilities of splm.
 
 #### 其他
 > The **HSAR** package provides Hierarchical Spatial Autoregressive Models (HSAR), based on a Bayesian Markov Chain Monte Carlo (MCMC) algorithm. **spatialprobit** make possible Bayesian estimation of the spatial autoregressive probit model (SAR probit model). The **ProbitSpatial** package provides methods for fitting Binomial spatial probit models to larger data sets; spatial autoregressive (SAR) and spatial error (SEM) probit models are included.
