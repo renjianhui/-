@@ -57,7 +57,7 @@
 
 ## 知名组织机构
  - [区域研究协会](http://www.regionalstudies.org)
- - [区域科学协会中国分会](http://www.rsachina.org/zzjg/ry/130.html)
+ - [区域研究协会中国分会](http://www.rsachina.org/index.html)
  - [中国区域科学协会](http://www.rsac.org.cn)
  - [国际区域科学学会](http://www.regionalscience.org/)
  
