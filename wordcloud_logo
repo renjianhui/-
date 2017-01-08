@@ -1,0 +1,10 @@
+libary(wordcloud2)
+
+library(readxl)
+
+region <- read_excel("~/regionalstudy.xlsx")
+
+figPath = system.file("examples/timg.jpeg",package = "wordcloud2")
+
+wordcloud2(region[,2:3], figPath = figPath, size = 0.1,color = "random-dark")
+
