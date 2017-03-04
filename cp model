@@ -1,0 +1,102 @@
+%此方案将两区域名义工资方程合并成一个方程，这样有助于求解完全集聚状态下另一个区域的名义工资
+clear;
+clc;
+%预先对工业品支出份额、弹性系数、运输成本和贸易自由度进行赋值
+syms phi tau sn se miu sigma
+miu=0.4;
+sigma=5;
+tau=2;
+phi=tau^(1-sigma);
+x0=[1,1];%w1=x(1)=,w2=x(2)
+outcome=[];%必须预先定义空矩阵，否则循环错误
+col=[];%必须预先定义空矩阵，否则循环错误
+for sn=0:0.01:1
+Fcp=@(x)([x(1)^sigma-(((1-miu)*(0.5+miu*x(1)*sn/(1-miu)))/(sn*x(1)^(1-sigma)+phi*(1-sn)*x(2)^(1-sigma))+phi*(1-((1-miu)*(0.5+miu*x(1)*sn/(1-miu))))/(phi*sn*x(1)^(1-sigma)+(1-sn)*x(2)^(1-sigma)))-x(2)^sigma+(phi*((1-miu)*(0.5+miu*x(1)*sn/(1-miu)))/(sn*x(1)^(1-sigma)+phi*(1-sn)*x(2)^(1-sigma))+(1-((1-miu)*(0.5+miu*x(1)*sn/(1-miu))))/(phi*sn*x(1)^(1-sigma)+(1-sn)*x(2)^(1-sigma)));sn*x(1)+(1-sn)*x(2)-1]);
+y=fsolve(Fcp,x0);
+outcome=[outcome;y(1),y(2)];
+col=[col;sn];
+end
+se=(1-miu)*(0.5+miu*outcome(:,1).*col/(1-miu));
+d1=col.*outcome(:,1).^(1-sigma)+phi*(1-col).*outcome(:,2).^(1-sigma);
+d2=phi*col.*outcome(:,1).^(1-sigma)+(1-col).*outcome(:,2).^(1-sigma);
+B1=se./d1+phi*(1-se)./d2;
+B2=phi*se./d1+(1-se)./d2;
+P1=d1.^(miu/(1-sigma));
+P2=d2.^(miu/(1-sigma));
+ommiga1=outcome(:,1)./P1;
+ommiga2=outcome(:,2)./P2;
+rwg1=ommiga1-ommiga2;
+%预先对工业品支出份额、弹性系数、运输成本和贸易自由度进行赋值
+syms phi tau sn se miu sigma
+miu=0.4;
+sigma=5;
+tau=1.75;
+phi=tau^(1-sigma);
+x0=[1,1];%w1=x(1)=,w2=x(2)
+outcome=[];%必须预先定义空矩阵，否则循环错误
+col=[];%必须预先定义空矩阵，否则循环错误
+for sn=0:0.01:1
+Fcp=@(x)([x(1)^sigma-(((1-miu)*(0.5+miu*x(1)*sn/(1-miu)))/(sn*x(1)^(1-sigma)+phi*(1-sn)*x(2)^(1-sigma))+phi*(1-((1-miu)*(0.5+miu*x(1)*sn/(1-miu))))/(phi*sn*x(1)^(1-sigma)+(1-sn)*x(2)^(1-sigma)))-x(2)^sigma+(phi*((1-miu)*(0.5+miu*x(1)*sn/(1-miu)))/(sn*x(1)^(1-sigma)+phi*(1-sn)*x(2)^(1-sigma))+(1-((1-miu)*(0.5+miu*x(1)*sn/(1-miu))))/(phi*sn*x(1)^(1-sigma)+(1-sn)*x(2)^(1-sigma)));sn*x(1)+(1-sn)*x(2)-1]);
+y=fsolve(Fcp,x0);
+outcome=[outcome;y(1),y(2)];
+col=[col;sn];
+end
+se=(1-miu)*(0.5+miu*outcome(:,1).*col/(1-miu));
+d1=col.*outcome(:,1).^(1-sigma)+phi*(1-col).*outcome(:,2).^(1-sigma);
+d2=phi*col.*outcome(:,1).^(1-sigma)+(1-col).*outcome(:,2).^(1-sigma);
+B1=se./d1+phi*(1-se)./d2;
+B2=phi*se./d1+(1-se)./d2;
+P1=d1.^(miu/(1-sigma));
+P2=d2.^(miu/(1-sigma));
+ommiga1=outcome(:,1)./P1;
+ommiga2=outcome(:,2)./P2;
+rwg2=ommiga1-ommiga2;
+%预先对工业品支出份额、弹性系数、运输成本和贸易自由度进行赋值
+syms phi tau sn se miu sigma
+miu=0.4;
+sigma=5;
+tau=1.6;
+phi=tau^(1-sigma);
+x0=[1,1];%w1=x(1)=,w2=x(2)
+outcome=[];%必须预先定义空矩阵，否则循环错误
+col=[];%必须预先定义空矩阵，否则循环错误
+for sn=0:0.01:1
+Fcp=@(x)([x(1)^sigma-(((1-miu)*(0.5+miu*x(1)*sn/(1-miu)))/(sn*x(1)^(1-sigma)+phi*(1-sn)*x(2)^(1-sigma))+phi*(1-((1-miu)*(0.5+miu*x(1)*sn/(1-miu))))/(phi*sn*x(1)^(1-sigma)+(1-sn)*x(2)^(1-sigma)))-x(2)^sigma+(phi*((1-miu)*(0.5+miu*x(1)*sn/(1-miu)))/(sn*x(1)^(1-sigma)+phi*(1-sn)*x(2)^(1-sigma))+(1-((1-miu)*(0.5+miu*x(1)*sn/(1-miu))))/(phi*sn*x(1)^(1-sigma)+(1-sn)*x(2)^(1-sigma)));sn*x(1)+(1-sn)*x(2)-1]);
+y=fsolve(Fcp,x0);
+outcome=[outcome;y(1),y(2)];
+col=[col;sn];
+end
+se=(1-miu)*(0.5+miu*outcome(:,1).*col/(1-miu));
+d1=col.*outcome(:,1).^(1-sigma)+phi*(1-col).*outcome(:,2).^(1-sigma);
+d2=phi*col.*outcome(:,1).^(1-sigma)+(1-col).*outcome(:,2).^(1-sigma);
+B1=se./d1+phi*(1-se)./d2;
+B2=phi*se./d1+(1-se)./d2;
+P1=d1.^(miu/(1-sigma));
+P2=d2.^(miu/(1-sigma));
+ommiga1=outcome(:,1)./P1;
+ommiga2=outcome(:,2)./P2;
+rwg3=ommiga1-ommiga2;
+figure
+subplot(2,2,1);
+plot(col,rwg1);
+xlabel('北部生产份额');
+ylabel('实际工资差异');
+title('高运输成本下实际工资率差异与生产分布');
+subplot(2,2,2);
+plot(col,rwg2);
+xlabel('北部生产份额')
+ylabel('实际工资差异')
+title('中等运输成本下实际工资率差异与生产分布');
+subplot(2,2,3);
+plot(col,rwg3);
+xlabel('北部生产份额')
+ylabel('实际工资差异')
+title('低运输成本下实际工资率差异与生产分布');
+subplot(2,2,4);
+plot(col,rwg1,'r',col,rwg2,col,rwg3,'g');
+xlabel('北部生产份额')
+ylabel('实际工资差异')
+text(col(fix(end/4)),rwg1(fix(end/4)),'\rightarrow 较低的自由贸易度');
+text(col(fix(end/2)),rwg2(fix(end/2)),'\rightarrow 中等水平的自由贸易度');
+text(col(fix(end/1.2)),rwg3(fix(end/1.2)),'\leftarrow 较高的自由贸易度');
+title('滚摆线图解和局部稳定性');
