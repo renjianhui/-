@@ -1,0 +1,148 @@
+% 由 J.Paul Elhorst summer （2010）编写，万庆（2017）补充注释
+
+clear;
+clc;
+A=xlsread('cigarette.xls');% 读取excel数据集
+W1=xlsread('Spat-Sym-US.xls');% 读取空间权重矩阵
+
+% *****自定义面板模型维度（截面数、时期数）*****（非常重要）
+% *****自定义面板模型维度（截面数、时期数）*****（非常重要）
+% *****自定义面板模型维度（截面数、时期数）*****（非常重要）
+T=30; % 时期数
+N=46; % 截面数
+% 对读取的空间权重矩阵W1进行行标准化生成空间权重矩阵W
+W=normw(W1); % 根据LeSage编写函数进行空间权重矩阵行标准化
+y=A(:,[3]); % 读取被解释变量（*****要特别注意Excel中样本数据的排列方式*****；3表示第三列）
+x=A(:,[4,6]); % 读取解释变量（4和6表示列号）
+xconstant=ones(N*T,1);% 生成常数矩阵
+[nobs K]=size(x);% 计算样本量和解释变量个数
+
+% ----------------------------------------------------------------------------------------
+% （1）OLS估计
+fprintf(1,'    （1）混合回归估计结果      ');
+results=ols(y,[xconstant x]);% 采用OLS函数进行普通最小二乘估计
+vnames=strvcat('logcit','intercept','logp','logy');% 生成变量名
+prt_reg(results,vnames,1);% 显示估计结果
+sige=results.sige*((nobs-K)/nobs);
+loglikols=-nobs/2*log(2*pi*sige)-1/(2*sige)*results.resid'*results.resid %计算最大似然函数值
+
+% 根据Elhorst编写的函数进行（稳健）LM检验
+LMsarsem_panel(results,W,y,[xconstant x]); % (Robust) LM tests
+% LM检验代码由 Donald Lacombe编写，可参考 http://www.rri.wvu.edu/lacombe/~lacombe.htm
+lm1=lmlag_panel(y,[xconstant x],W);% LM空间滞后
+prt_tests(lm1);
+lm2=lmerror_panel(y,[xconstant x],W); % LM空间误差
+prt_tests(lm2);
+lm3=lmlag_robust_panel(y,[xconstant x],W);% 稳健LM空间滞后
+prt_tests(lm3);
+lm4=lmerror_robust_panel(y,[xconstant x],W);% 稳健LM空间误差
+prt_tests(lm4);
+
+
+% ----------------------------------------------------------------------------------------
+% （2）个体固定效应面板模型估计
+% fixed effects, within estimator
+% 对y和x进行去均值
+fprintf(1,'    （2）个体固定效应面板模型估计结果     ');
+model=1;%1表示仅有个体固定效应
+[ywith,xwith,meanny,meannx,meanty,meantx]=demean(y,x,N,T,model);
+results=ols(ywith,xwith);
+vnames=strvcat('logcit','logp','logy'); 
+prt_reg(results,vnames);
+sfe=meanny-meannx*results.beta; % 包含常数项
+yme = y - mean(y);
+et=ones(T,1);
+error=y-kron(et,sfe)-x*results.beta;
+rsqr1 = error'*error;
+rsqr2 = yme'*yme;
+FE_rsqr2 = 1.0 - rsqr1/rsqr2 % 计算拟合优度
+sige=results.sige*((nobs-K)/nobs);
+logliksfe=-nobs/2*log(2*pi*sige)-1/(2*sige)*results.resid'*results.resid
+
+LMsarsem_panel(results,W,ywith,xwith); % (Robust) LM tests
+lm1=lmlag_panel(ywith,xwith,W);
+prt_tests(lm1);
+lm2=lmerror_panel(ywith,xwith,W);
+prt_tests(lm2);
+lm3=lmlag_robust_panel(ywith,xwith,W);
+prt_tests(lm3);
+lm4=lmerror_robust_panel(ywith,xwith,W);
+prt_tests(lm4);
+
+
+% ----------------------------------------------------------------------------------------
+% （3）时间固定效应面板模型估计
+% fixed effects, within estimator
+% demeaning of the y and x variables
+fprintf(1,'    （3）时间固定效应面板模型估计结果     ');
+model=2;%1表示仅有时间固定效应
+[ywith,xwith,meanny,meannx,meanty,meantx]=demean(y,x,N,T,model);
+results=ols(ywith,xwith);
+vnames=strvcat('logcit','logp','logy'); 
+prt_reg(results,vnames);
+tfe=meanty-meantx*results.beta; 
+yme = y - mean(y);
+en=ones(N,1);
+error=y-kron(tfe,en)-x*results.beta;
+rsqr1 = error'*error;
+rsqr2 = yme'*yme;
+FE_rsqr2 = 1.0 - rsqr1/rsqr2 
+sige=results.sige*((nobs-K)/nobs);
+logliktfe=-nobs/2*log(2*pi*sige)-1/(2*sige)*results.resid'*results.resid
+
+LMsarsem_panel(results,W,ywith,xwith); 
+lm1=lmlag_panel(ywith,xwith,W);
+prt_tests(lm1);
+lm2=lmerror_panel(ywith,xwith,W);
+prt_tests(lm2);
+lm3=lmlag_robust_panel(ywith,xwith,W);
+prt_tests(lm3);
+lm4=lmerror_robust_panel(ywith,xwith,W);
+prt_tests(lm4);
+
+
+% ----------------------------------------------------------------------------------------
+% （4）双向固定效应面板模型估计
+% fixed effects, within estimator
+% demeaning of the y and x variables
+fprintf(1,'    （4）双向固定效应面板模型估计结果     ');
+model=3;%1表示具有个体和时间双向固定效应
+[ywith,xwith,meanny,meannx,meanty,meantx]=demean(y,x,N,T,model);
+results=ols(ywith,xwith);
+vnames=strvcat('logcit','logp','logy'); % should be changed if x is changed
+prt_reg(results,vnames);
+intercept=mean(y)-mean(x)*results.beta; 
+sfe=meanny-meannx*results.beta-kron(en,intercept);
+tfe=meanty-meantx*results.beta-kron(et,intercept);
+yme = y - mean(y);
+ent=ones(N*T,1);
+error=y-kron(tfe,en)-kron(et,sfe)-x*results.beta-kron(ent,intercept);
+rsqr1 = error'*error;
+rsqr2 = yme'*yme;
+FE_rsqr2 = 1.0 - rsqr1/rsqr2 % r-squared including fixed effects
+sige=results.sige*((nobs-K)/nobs);
+loglikstfe=-nobs/2*log(2*pi*sige)-1/(2*sige)*results.resid'*results.resid
+
+LMsarsem_panel(results,W,ywith,xwith); % (Robust) LM tests
+lm1=lmlag_panel(ywith,xwith,W);
+prt_tests(lm1);
+lm2=lmerror_panel(ywith,xwith,W);
+prt_tests(lm2);
+lm3=lmlag_robust_panel(ywith,xwith,W);
+prt_tests(lm3);
+lm4=lmerror_robust_panel(ywith,xwith,W);
+prt_tests(lm4);
+
+% -------------------------------------------------------------------------
+%空间和时间固定效应的联合非显著性检验
+fprintf(1,'    空间和时间固定效应的联合非显著性检验     ');
+LR=-2*(logliktfe-loglikstfe);
+dof=N;
+probability=1-chis_prb(LR,dof);
+% Note: probability > 0.05 implies rejection of spatial fixed effects
+fprintf(1,'LR-test joint significance spatial fixed effects, degrees of freedom and probability = %9.4f,%6d,%9.4f \n',LR,dof,probability);
+LR=-2*(logliksfe-loglikstfe);
+dof=T;
+probability=1-chis_prb(LR,dof);
+% Note: probability > 0.05 implies rejection of spatial fixed effects
+fprintf(1,'LR-test joint significance time-periode fixed effects, degrees of freedom and probability = %9.4f,%6d,%9.4f \n',LR,dof,probability);
