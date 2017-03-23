@@ -1,0 +1,29 @@
+rdsocial <- read.table("clipboard",header = TRUE)
+
+attach(rdsocial)
+
+library(ggplot2)
+
+
+mytheme <- theme(panel.grid.major = element_line(colour = NA),
+  panel.background = element_rect(fill = "white",colour = "grey"),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.border = element_blank())
+
+
+ggplot(data = rdsocial, aes(meanrd,meansocialfilter,label = city)) + 
+  
+  geom_point(size = 2,alpha = 0.5) +
+  
+  geom_hline(yintercept  = mean(meansocialfilter)) +
+  
+  geom_vline(xintercept = mean(meanrd)) +
+  
+  labs(x = "R&D投入强度(%)",y = "社会过滤条件") + 
+  
+  geom_text(check_overlap = TRUE,hjust = 0,nudge_x = 0.05) +
+  
+  geom_smooth(method = "lm",linetype = 2,color = "black")  +
+  
+  mytheme 
