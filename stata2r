@@ -17,8 +17,6 @@ ssc install outreg2
 //在R中每次使用相应的包，需要输入library（packages name）来调用
 ```
 
-    checking outreg2 consistency and verifying not already installed...
-    all files already exist and are up to date.
     
 
 ***R代码块***
