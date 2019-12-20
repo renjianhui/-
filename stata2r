@@ -1,0 +1,366 @@
+# Stata 与 R等效命令备忘录
+
+## 1.引言
+
+该备忘录总结了常见的`Stata`计量经济分析命令，并提供它们在`R`中的等效命令与之对应。更多关于导入/清理数据、变量转换和其他基本命令可参考Hanck等（2019）的《Econometrics with R》，以及Wickham和Grolemund（2017）的《R for Data Science》。本示例选自`wooldridge`《计量经济学导论：现代观点》，其中 `Stata` 数据集的下载链接为[datasets](http://fmwww.bc.edu/ec-p/data/wooldridge/datasets.list.html),`R`数据集可直接通过安装`wooldridge`包来获取，更加的方便。除了特别说明外，所有`R`命令都源自基础`R`包。在其后的每小节中，我们都是分两部分代码段来展开，前一段为`stata`代码块，后一段为等效的`R`代码块。
+特别申明：资料来源为`https://github.com/rstudio/cheatsheets`。
+
+## 2.安装
+
+注意：在`stata`中，一般主要依赖`log`文件来储存命令和结果输出，`R`却不然。在`R`中，通常使用由谢益辉编写的`Rmarkdown`语法创建R-markdown文件来捕获代码和结果输出。
+
+***stata代码块***
+
+```stata
+ssc install outreg2 
+//  安装outreg2包。注意，stata安装包不需要每次使用时调用
+//在R中每次使用相应的包，需要输入library（packages name）来调用
+```
+
+    checking outreg2 consistency and verifying not already installed...
+    all files already exist and are up to date.
+    
+
+***R代码块***
+
+```{r}
+install.packages("wooldridge") 
+#install `wooldridge` package
+data(package = "wooldridge") 
+#list datasets in `wooldridge` package
+load（wage1）                
+#load `wage1` dataset into session
+?wage1                        
+#consult documentation on `wage1` dataset
+```
+## 3.基本绘图
+
+基础绘图部分主要演示了直方图、散点图、散点图加拟合线以及分组箱线图，示例数据为 `wage1`。
+
+***stata代码块***
+
+```stata
+hist(wage)                                       
+//histogram of `wage`hist(wage), by(nonwhite)
+scatter (wage edu)                              
+//scatter plot of `wage` by `educ`
+twoway (scatter wage educ) (lfit wage educ)     
+//scatter plot with fitted line
+graph box wage, by(nonwhite)                    
+//boxplot of wage by `nonwhite`
+```
+
+***R代码块***
+
+```{r}
+hist(wage1$wage)                                 
+# histogram of `wage``
+plot(y = wage$1wage, x = wage1$educ)            
+abline(lm(wage1$wage~wage1$educ),col=“red”)    
+# add fitted line to scatterplot
+boxplot(wage1$wage~wage1$nonwhite)               
+# boxplot of `wage` by `nonwhite`
+```
+
+## 4.汇总数据
+
+`Stata`的劣势是仅允许一个人每次使用一个数据集，在`R`中却可以同时调入多个数据集，因此必须在每个函数调用中指定。注意：`R`没有等同于`Stata`中`codebook`的命令。在`R`中，安装`AER`包时，会自动安装其他有用的附属包:`car`、`lmtest`、`sandwich`。
+
+***stata代码块***
+```stata
+browse                        
+// open browser for loaded data
+describe                     
+// describe structure of loaded data
+summarize                    
+// display summary statistics for all variables in dataset
+list in 1/6                  
+// display first 6 rows
+tabulate educ                
+// tabulate `educ`variable frequencies
+tabulate educ female         
+// cross-tabulate `educ` and `female` frequencies
+```
+***R代码块***
+```{r}
+View(wage1)                                               
+# open browser for loaded`wage1` data
+str(wage1)                                                
+# describe structure of `wage1` data
+summary(wage1)                                            
+# display summary statistics for `wage1` variables
+head(wage1)                                               
+# display first 6 (default) rows data
+tail(wage1)                                               
+# display last 6 rows
+table(wage1$educ)                                         
+#tabulate `educ` frequencies
+table(“yrs_edu” = wage1$educ, “female” =wage1$female) 
+# tabulate `educ`frequencies name table columns
+```
+
+## 5.生成或编辑变量
+
+本部分涉及生成新变量、计算变量的均值、选取部分变量、生成虚拟变量等相关内容
+
+***stata代码块***
+```stata
+gen exper2 = exper^2                                 
+// create`exper` squared variable
+egen wage_avg = mean(wage)                          
+// create average wage variable
+drop tenursq                                        
+// drop `tenursq`variable
+keep wage educ exper nonwhite                        
+// keep selected variables
+tab numdep, gen(numdep)                             
+// create dummy variables for `numdep`
+recode exper (1/20 = 1 "1 to 20 years") (21/40 = 2 "21 to 40 years") (41/max = 3 "41+ years"),gen(experlvl)  
+// recode `exper` and gen new variable
+```
+***R代码块***
+```{r}
+wage1$exper2 <- wage1$exper^2                                      
+#create `exper` squared variable
+wage1$wage_avg <- mean(wage1$wage)                                  
+#create average wage variable
+wage1$tenursq <- NULL                                               
+#drop `tenursq`
+wage1 <- wage1[ , c(“wage”, “educ”,“exper”, “nonwhite”)]    
+# keep selected variables
+wage1 <-fastDummies::dummy_cols(wage1,select_columns = “numdep”)  
+# create dummy variables for `numdep`, use {fastDummies} package
+wage1$experlvl <- 3                                                 
+# recode `exper`
+wage1$experlvl[wage1$exper < 41] <- 2
+wage1$experlvl[wage1$exper < 21] <- 1
+```
+
+## 6.估计模型,1/2
+
+本部分主要针对横截面数据，因变量为连续变量的`OLS`估计和因变量为二值选择或截断时的`Logit`和`Tobit`模型。
+
+### 6.1 OLS
+
+***stata代码块***
+
+```stata
+reg wage educ                            
+// simple regression of `wage` by `educ` (Results printed automatically)
+reg wage educ if nonwhite==1            
+// add condition with if statement
+reg wage educ exper, robust            
+//multiple regression using HC1 robust standard errors
+reg wage educ exper,cluster(numdep)    
+// use clustered standard errors
+```
+
+***R代码块***
+
+```{r}
+mod1 <- lm(wage ~ educ, data =wage1)                                              
+# simple regression of`wage` by `educ`, store results in`mod1`
+summary(mod1)                                                                      
+# print summary of `mod1` results
+mod2 <- lm(wage ~ educ, data =wage1[wage1$nonwhite==1, ])                          
+# add condition with if statement`
+mod3 <- estimatr::lm_robust(wage ~ educ + exper, data = wage1, se_type= “stata”) 
+# multiple regressionwith HC1 (Stata default) robust standard errors, use {estimatr} package
+mod4 <- estimatr::lm_robust(wage ~ educ + exper, data = wage1,clusters = numdep)   
+# use clustered standard errors.
+```
+
+### 6.2 MLE (Logit/Probit/Tobit)
+
+示例数据`mroz`
+
+***stata代码块***
+```stata
+logit inlf nwifeinc educ                
+//estimate logistic regression
+probit inlf nwifeinc educ               
+//estimate logistic regression
+tobit hours nwifeinc educ, ll(0)       
+// estimate tobit regression,lower-limit of y censored at zero
+```
+
+***R代码块***
+
+```{r}
+mod_log <- glm(inlf~nwifeinc + educ+ family=binomial(link="logit"),data=mroz)     
+# estimate logistic regression
+mod_pro <- glm(inlf~nwifeinc + educ+ family=binomial(link=“probit"),data=mroz)   
+# estimate logistic regression
+mod_tob <- AER::tobit(hours ~ nwifeinc + educ, left = 0, data = mroz)               
+# estimate tobit regression,lower-limit of y censored at zero,use {AER} package
+```
+
+## 7.统计检验与诊断
+
+本部分主要涉及异方差检验、遗漏变量检验和组间`t`检验。
+
+***stata代码块***
+
+
+```stata
+reg lwage educ exper                    
+// estimation used for examples below
+estat hettest                         
+// Breusch-Pagan /Cook-Weisberg test for heteroskedasticity
+estat ovtest                          
+// Ramsey RESET test for omitted variables
+ttest wage, by(nonwhite)              
+// independent group t-test, compare means of same variable between groups
+```
+
+***R代码块***
+
+
+```{r}
+mod <-lm(lwage ~ educ exper, data =wage1)        
+# estimate used for examples below
+lmtest::bptest(mod)                               
+# Breusch-Pagan/ Cook-Weisberg test for heteroskedasticity using the {lmtest} package
+lmtest::resettest(mod)                            
+# Ramsey RESET test
+t.test(wage ~ nonwhite, data =wage1)              
+# independent group t-test
+```
+
+## 8.交互项，类别/连续变量
+
+在`Stata`中，通常使用特殊运算符指代变量为连续变量（`c.`）或类别变量（`i.`）。 同样，“＃”运算符表示不同的方式来返回它们之间的交互变量。 在这里，我们展示了这些运算符的常见用法及其`R`等效处理方式。
+
+***stata代码块***
+
+
+```stata
+reg lwage i.numdep                  
+// treat `numdep` as a factor variable
+reg lwage c.educ#c.exper            
+// return interaction term only
+reg lwage c.educ##c.exper           
+// return full factorial specification
+reg lwage c.exper##i.numdep         
+//return full, interact continuous and categorical
+```
+
+***R代码块***
+
+```{r}
+lm(lwage ~ as.factor(numdep), data= wage1)         
+# treat `numdep` as factor
+lm(lwage ~ educ:exper, data =wage1)                 
+# return interaction termonly
+lm(lwage ~ educ*exper, data =wage1)                 
+# return full factorial specification
+lm(wage ~ exper*as.factor(numdep),data = wage1)     
+# return full,interact continuous and categorical
+```
+
+## 9.估计模型，2/2
+
+### 9.1 面板/纵向
+
+示例数据murder
+
+***stata代码块***
+
+
+```stata
+xtset id year                
+// set `id` as entities (panel) and `year` as time variable
+xtdescribe                    
+// describe pattern of xt data
+xtsum                        
+// summarize xt data
+xtreg mrdrte unem, fe        
+// fixed effects regression
+```
+
+***R代码块***
+
+
+```{r}
+plm::is.pbalanced(murder$id,murder$year)
+# check panel balancewith {plm} package
+modfe <- plm::plm(mrdrte ~ unem,index = c("id", "year"),model ="within", data = murder)
+# estimatefixed effects (“within”) model
+summary(modfe)
+# display results
+```
+
+### 9.2 工具变量（2SLS）
+
+内生性问题是大家比较关心的问题，示例数据mroz
+
+***stata代码块***
+
+
+```stata
+ivreg lwage (educ = fatheduc),first           
+// show results of firststage regression
+etest first                                    
+// test IV and endogenous variable
+ivreg lwage(educ = fatheduc)                  
+//show results of 2SLS directly
+```
+
+***R代码块***
+
+
+```{r}
+modiv <-AER::ivreg(lwage ~ educ |fatheduc, data = mroz)              
+# estimate 2SLS with {AER} package
+summary(modiv, diagnostics = TRUE)                                    
+# get diagnostic tests of IV andendogenous variable
+```
+
+## 10.后续估计
+
+在`Stata`中，后续估计必须紧接着回归估计,而`R`是面向对象编程，不存在这样的困扰。本部分主要涉及回归结果输出和边际效应展示。
+
+***stata代码块***
+
+
+```stata
+reg lwage educ exper##exper                
+//estimation used for following postestimation commands
+estimates store mod1                     
+// stores inmemory the last estimation resultsto `mod1`
+margins                                    
+// get average predictive
+margins
+margins, dydx(*)                          
+// get average marginal effects for all variables
+marginsplot                                
+// plot marginal effects
+margins, dydx(exper)                      
+// average marginal effects of experience
+margins, at(exper=(1(10)51))              
+// average predictive margins over `exper` range at 10-year increments
+estimates use mod1                      
+// loads `mod1` back into working memory
+estimates table mod1 mod2               
+// display table with stored estimation results
+```
+
+***R代码块***
+
+
+```{r}
+mod1 <- lm(lwage ~ educ + exper + I(exper^2), data = wage1)
+# Note: in R, mathematical expressions inside a formula call must be isolated with `I()`
+margins::prediction(mod1)                                     
+# get average predictive margins with {margins} package
+m1 <- margins::margins(mod1)                                  
+# get average marginal effects for all variables
+plot(m)                                                       
+# plot marginal effects
+summary(m)                                                    
+# get detailed summary of marginal effects
+margins::prediction(mod1, at = list(exper = seq(1,51,10)))    
+# predictive margins over `exper` range at 10-year increments
+stargazer::stargazer(mod1, mod2, type = “text”)             
+# use {stargazer} package, with `type=text` to display results within R. Note: `type= ` also can be changed for LaTex and HTML output.
+```
